@@ -1,16 +1,6 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# UI RX by mau
 
-npx create-react-app ui-rx --typescript
-
-npm install -g yarn
-
-yarn add @material-ui/core
-
-yarn add @material-ui/icons
-
-yarn start
-
-## Available Scripts
+## Start
 
 In the project directory, you can run:
 
