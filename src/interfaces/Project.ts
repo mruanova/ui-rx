@@ -3,6 +3,7 @@
  */
 export class Project {
   ProjectId: number = 0;
+  Name: string = '';
   Website: string = '';
   Address: string = '';
   Position: string = '';
@@ -10,6 +11,7 @@ export class Project {
   constructor(obj?: any) {
     if (obj) {
       this.ProjectId = obj.ProjectId ?? obj.id ?? this.ProjectId;
+      this.Name = obj.Name ?? this.Name;
       this.Website = obj.Website ?? this.Website;
       this.Address = obj.Address ?? this.Address;
       this.Position = obj.Position ?? this.Position;

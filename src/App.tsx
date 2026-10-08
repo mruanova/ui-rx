@@ -13,7 +13,7 @@ import Project from './interfaces/Project';
 import ProjectsService from './services/ProjectsService';
 import SortOrder from './enums/SortOrder';
 import sortByColumnHeader from './utilities/sortByColumnHeader';
-
+import PROJECTS from './mocks/PROJECTS';
 const App: FC = () => {
   const classes = useStyles();
   const [projects, setProjects] = React.useState<Project[]>([]);
@@ -21,6 +21,9 @@ const App: FC = () => {
   const [order, setOrder] = React.useState(SortOrder.asc);
 
   React.useEffect(() => {
+    const fallbackProjects = PROJECTS.map((project) => new Project(project))
+      .sort((a, b) => a.ProjectId - b.ProjectId);
+
     ProjectsService.getProjects()
       .then((response: any) => {
         const items = response.data?.body?.Items;
@@ -28,11 +31,15 @@ const App: FC = () => {
           ? items
             .map((item: any) => new Project(item))
             .sort((a, b) => a.ProjectId - b.ProjectId)
-          : [];
-        setProjects(temp);
-      })
-      .catch((error: any) => {
+          : fallbackProjects;
+        if (temp.length > 1) {
+          setProjects(temp);
+        } else {
+          setProjects(fallbackProjects);
+        }
+      }).catch((error: any) => {
         console.error(error);
+        setProjects(fallbackProjects);
       });
   }, []);
 
@@ -40,20 +47,19 @@ const App: FC = () => {
     _event: React.ChangeEvent<{}>,
     property: string,
   ) => {
-    console.log(property);
-    console.log(order);
-    let temp = order;
-    if (orderBy === property && temp === SortOrder.asc) {
-      temp = SortOrder.desc;
-    } else if (orderBy === property && temp === SortOrder.desc) {
-      temp = SortOrder.asc;
-    }
+    const nextOrder =
+      orderBy === property
+        ? order === SortOrder.asc
+          ? SortOrder.desc
+          : SortOrder.asc
+        : SortOrder.asc;
+
     const sortedProjects = sortByColumnHeader(
       projects.slice(),
-      temp,
+      nextOrder,
       property,
     );
-    setOrder(temp);
+    setOrder(nextOrder);
     setOrderBy(property);
     setProjects(sortedProjects);
   };
