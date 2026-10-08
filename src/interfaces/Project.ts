@@ -9,16 +9,13 @@ export class Project {
   Coordinates: number[] = [];
   constructor(obj?: any) {
     if (obj) {
-      if (Object.hasOwnProperty.call(obj, 'ProjectId'))
-        this.ProjectId = obj.ProjectId;
-      if (Object.hasOwnProperty.call(obj, 'Website'))
-        this.Website = obj.Website;
-      if (Object.hasOwnProperty.call(obj, 'Address'))
-        this.Address = obj.Address;
-      if (Object.hasOwnProperty.call(obj, 'Position'))
-        this.Position = obj.Position;
-      if (Object.hasOwnProperty.call(obj, 'Coordinates'))
-        this.Coordinates = obj.Coordinates;
+      this.ProjectId = obj.ProjectId ?? obj.id ?? this.ProjectId;
+      this.Website = obj.Website ?? this.Website;
+      this.Address = obj.Address ?? this.Address;
+      this.Position = obj.Position ?? this.Position;
+      this.Coordinates = Array.isArray(obj.Coordinates)
+        ? obj.Coordinates
+        : this.Coordinates;
     }
   }
 }

@@ -16,24 +16,25 @@ import sortByColumnHeader from './utilities/sortByColumnHeader';
 
 const App: FC = () => {
   const classes = useStyles();
-  const defaultProjects: Project[] = [];
-  const [projects, setProjects] = React.useState(defaultProjects);
+  const [projects, setProjects] = React.useState<Project[]>([]);
   const [orderBy, setOrderBy] = React.useState('ProjectId');
   const [order, setOrder] = React.useState(SortOrder.asc);
 
-  if (projects.length === 0) {
-    /** get projects from database */
+  React.useEffect(() => {
     ProjectsService.getProjects()
       .then((response: any) => {
-        const temp = response.data.body.Items.sort((a: Project, b: Project) => {
-          return a.ProjectId - b.ProjectId;
-        });
+        const items = response.data?.body?.Items;
+        const temp: Project[] = Array.isArray(items)
+          ? items
+            .map((item: any) => new Project(item))
+            .sort((a, b) => a.ProjectId - b.ProjectId)
+          : [];
         setProjects(temp);
       })
       .catch((error: any) => {
         console.error(error);
       });
-  }
+  }, []);
 
   const handleRequestSort = (
     _event: React.ChangeEvent<{}>,
